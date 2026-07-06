@@ -732,7 +732,7 @@ fn run_dassl(
 
     // Silence DASKR's own diagnostic printing (it would go to stdout and corrupt
     // the omc result record); failures are surfaced here via IDID instead.
-    daskr::aux::xsetf(0);
+    daskr::auxiliary::xsetf(0);
 
     let layout = &model.layout;
     // Init (with homotopy fallback). No state events on this path, so relations
@@ -966,7 +966,7 @@ fn run_dassl_events(
     stats: &mut SolveStats,
 ) -> Result<Vec<f64>> {
     use daskr::solver;
-    daskr::aux::xsetf(0);
+    daskr::auxiliary::xsetf(0);
 
     let layout = &model.layout;
     // Init (with homotopy fallback). Relation mode 2 (all relations fresh through
