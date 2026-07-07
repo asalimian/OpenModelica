@@ -935,7 +935,7 @@ static inline void dense_kron_id_vec(int block_count,
  *   - 2x2 complex block:  out_i   += factor * alpha[j] * v_i - factor * beta[j]  * v_{i+1}
  *                         out_i+1 += factor * beta[j]  * v_i + factor * alpha[j] * v_{i+1}
  *
- * where i and j are given from the eigenvalue indices (realEigenvalueIndex, complexEigenvalueIndex). 
+ * where i and j are given from the eigenvalue indices (realEigenvalueIndex, complexEigenvalueIndex).
  *
  * L contains only the strict lower triangular couplings outside these diagonal blocks.
  * Hence L never stores the lower entry inside a complex 2x2 block; that entry is beta[j].

@@ -392,7 +392,7 @@ void buildRustOMC() {
   standardSetup()
   // RUST_OMC_THREADS=4 parallelises the rustc front-end on the (near-serial)
   // generated-crate chain. Linking uses mold (RUST_OMC_MOLD defaults ON); the
-  // image ships a current mold (see .CI/cache/rust/Dockerfile).
+  // image ships a current mold.
   sh """
     cmake -S . -B build_cmake \
       -DCMAKE_BUILD_TYPE=Release \
@@ -654,7 +654,7 @@ void buildGUI(stash, qtVersion) {
   }
 }
 
-void buildAndRunOMEditTestsuite(stash, qtVersion) {
+void buildAndRunOMEditTestsuite(stashName, qtVersion) {
   if (isWindows()) {
   bat ("""
      If Defined LOCALAPPDATA (echo LOCALAPPDATA: %LOCALAPPDATA%) Else (Set "LOCALAPPDATA=C:\\Users\\OpenModelica\\AppData\\Local")
@@ -677,13 +677,13 @@ void buildAndRunOMEditTestsuite(stash, qtVersion) {
   """)
   } else {
 
-  if (stash) {
+  if (stashName) {
     standardSetup()
     sh 'rm -rf OMEdit/common'
-    unstash stash
+    unstash stashName
   }
   sh 'autoreconf --install'
-  if (stash) {
+  if (stashName) {
     patchConfigStatus()
   }
   if (qtVersion.equals('qt6')) {
@@ -691,7 +691,7 @@ void buildAndRunOMEditTestsuite(stash, qtVersion) {
   } else {
     sh 'echo ./configure `./config.status --config` > config.status.2 && bash ./config.status.2'
   }
-  if (stash) {
+  if (stashName) {
     makeLibsAndCache()
   }
   sh "touch omc.skip omc-diff.skip ReferenceFiles.skip omsimulator.skip omedit.skip omplot.skip && ${makeCommand()} -j${numPhysicalCPU()} omc omc-diff ReferenceFiles omsimulator omedit omplot omparser" // Pretend we already built omc since we already did so
@@ -951,7 +951,7 @@ void partestStashed(stashName, partition, partitionmodulo) {
 }
 
 void crossBuildFMU() {
-  def deps = docker.image('docker.openmodelica.org/build-deps:ubuntu-22.04-main')
+  def deps = docker.image('docker.openmodelica.org/build-deps:ubuntu-22.04')
   deps.pull()
   def dockergid = sh (script: 'stat -c %g /var/run/docker.sock', returnStdout: true).trim()
   deps.inside("-v /var/run/docker.sock:/var/run/docker.sock --group-add '${dockergid}' " +
